@@ -2,8 +2,8 @@
   Minimalist Valentine – no libraries
   Replace these values:
 ------------------------------------------ */
-const INSERT_DATE = "2023-09-17";      // <-- change me
-const INSERT_NAME = "Anelia";          // <-- change me
+const INSERT_DATE = "12.05.2025";      // <-- change me
+const INSERT_NAME = "Ариша";          // <-- change me
 
 /* Hidden detail */
 console.log("Because with you, I found home.");
