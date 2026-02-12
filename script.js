@@ -1,9 +1,8 @@
 /* -----------------------------------------
   Minimalist Valentine – no libraries
-  Replace these values:
 ------------------------------------------ */
-const INSERT_DATE = "12.05.2025";      // <-- change me
-const INSERT_NAME = "Ариша";          // <-- change me
+const INSERT_DATE = "12.05.2025";
+const INSERT_NAME = "Ариша";
 
 /* Hidden detail */
 console.log("Because with you, I found home.");
@@ -46,7 +45,6 @@ function setActiveScreen(next) {
 }
 
 function pulseNoFeedback() {
-  // Atmospheric feedback for "No"
   noHint.textContent = "Some decisions require courage. Try again.";
   noHint.classList.add("show");
 
@@ -67,7 +65,7 @@ async function typewriter(text, target, speed = 55) {
 }
 
 /* -------------------------
-  Particles (subtle ambient)
+  Particles
 -------------------------- */
 let pCtx, W, H, particles = [], animId = null;
 function resizeCanvas() {
@@ -96,12 +94,10 @@ function drawParticles() {
   if (!pCtx) return;
   pCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-  // Soft dots, no harsh colors
   for (const p of particles) {
     p.x += p.vx;
     p.y += p.vy;
 
-    // wrap
     if (p.x < -10) p.x = window.innerWidth + 10;
     if (p.x > window.innerWidth + 10) p.x = -10;
     if (p.y < -10) p.y = window.innerHeight + 10;
@@ -125,14 +121,8 @@ function startParticles() {
   }
 }
 
-function stopParticles() {
-  particlesCanvas.classList.remove("is-on");
-  if (animId) cancelAnimationFrame(animId);
-  animId = null;
-}
-
 /* -------------------------
-  Floating hearts (after "Yes" + final screen)
+  Floating hearts
 -------------------------- */
 function spawnHeart() {
   const el = document.createElement("div");
@@ -157,19 +147,12 @@ function startHearts() {
   heartsLayer.classList.add("is-on");
   if (heartTimer) return;
   heartTimer = setInterval(() => {
-    // small burst
     spawnHeart();
     if (Math.random() > 0.55) spawnHeart();
   }, 520);
 }
 
-function stopHearts() {
-  heartsLayer.classList.remove("is-on");
-  if (heartTimer) clearInterval(heartTimer);
-  heartTimer = null;
-}
-
-/* Inject CSS for floating hearts (kept in JS to keep CSS file clean) */
+/* CSS for floating hearts */
 (function injectHeartCSS() {
   const style = document.createElement("style");
   style.textContent = `
@@ -209,47 +192,33 @@ function stopHearts() {
   Main flow
 -------------------------- */
 async function start() {
-  // Initial typewriter
   await typewriter("Do you trust me?", typeTarget, 58);
 
-  // Button wiring
   btnNo.addEventListener("click", () => pulseNoFeedback());
 
   btnYes.addEventListener("click", async () => {
-    // Transition to screen 2
     noHint.classList.remove("show");
     setActiveScreen(screen2);
-
-    // Start ambient particles
     startParticles();
 
-    // Heart reveal
     await sleep(350);
     heartWrap.classList.add("show");
 
-    // Small pause for calmness
     await sleep(800);
-
-    // Loading sequence
     await runLoading();
-
-    // Reveal messages + photo + final ask
     await revealStory();
   });
 
   btnFinal.addEventListener("click", async () => {
-    // Cinematic fade to final screen
     setActiveScreen(screen3);
-    startHearts(); // floating hearts keep going in the background
+    startHearts();
 
-    // Final message
     finalMsg.innerHTML =
       `System locked.<br>` +
-      `Partner selected: <span style="color: rgba(120,255,214,.92); text-shadow: 0 0 18px rgba(120,255,214,.12);">${escapeHtml(INSERT_NAME)}</span><br>` +
-      `Status: <span style="color: rgba(255,255,255,.92);">Irreplaceable.</span>`;
+      `Partner selected: <span style="color: rgba(120,255,214,.92);">${INSERT_NAME}</span><br>` +
+      `Status: <span>Irreplaceable.</span>`;
   });
 
-  // Resize handler
   window.addEventListener("resize", () => {
     if (!pCtx) return;
     resizeCanvas();
@@ -257,52 +226,33 @@ async function start() {
 }
 
 async function runLoading() {
-  loadingText.style.opacity = "1";
   let progress = 0;
-
-  // Smooth 0 → 100 (slightly organic timing)
   while (progress < 100) {
-    const step = 1 + Math.floor(Math.random() * 3); // 1-3
+    const step = 1 + Math.floor(Math.random() * 3);
     progress = Math.min(100, progress + step);
     bar.style.width = `${progress}%`;
     pct.textContent = `${progress}%`;
     await sleep(45 + Math.random() * 55);
   }
-
   await sleep(450);
 }
 
 async function revealStory() {
   messageBlock.classList.add("show");
 
-  // Pause before date
   await sleep(800);
-
   sinceDateEl.textContent = INSERT_DATE;
-  // date glow animation
   await sleep(150);
   sinceDateEl.classList.add("show");
 
-  // Pause then reveal photo
   await sleep(900);
   photoBlock.classList.add("show");
 
   await sleep(550);
   photoCaption.classList.add("show");
 
-  // Final ask
   await sleep(900);
   finalAsk.classList.add("show");
 }
 
-/* Safe text injection */
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
-  }[m]));
-}
-
-/* -------------------------
-  Kick off
--------------------------- */
 start();
