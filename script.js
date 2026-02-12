@@ -1,4 +1,4 @@
-// Hidden detail
+// Hidden detail (EN + will also log RU/EN later)
 console.log("Because with you, I found home.");
 
 const $ = (sel) => document.querySelector(sel);
@@ -58,6 +58,15 @@ const langEnBtn = $("#langEn");
 const LS_LANG_KEY = "val_lang";
 
 /* -------------------------
+   Safety: quick DOM check
+-------------------------- */
+console.log("[VAL] DOM check:", {
+  screen1: !!screen1, screen2: !!screen2, screen3: !!screen3,
+  yesBtn: !!yesBtn, noBtn: !!noBtn, finalBtn: !!finalBtn,
+  bgm: !!bgm, soundBtn: !!soundBtn
+});
+
+/* -------------------------
    Text dictionary
 -------------------------- */
 const TEXT = {
@@ -106,31 +115,31 @@ let lang = "ru";
 -------------------------- */
 function showScreen(screenToShow) {
   [screen1, screen2, screen3].forEach((s) => {
+    if (!s) return;
     s.classList.remove("is-visible");
     s.classList.remove("is-active");
   });
+
+  if (!screenToShow) {
+    console.warn("[VAL] showScreen: target screen is null");
+    return;
+  }
+
   screenToShow.classList.add("is-active");
   requestAnimationFrame(() => screenToShow.classList.add("is-visible"));
 }
 
 function reveal(el) {
+  if (!el) return;
   el.hidden = false;
   requestAnimationFrame(() => el.classList.add("is-visible"));
-}
-
-function fadeTextSwap(el, newHTML) {
-  // small cinematic crossfade
-  el.classList.remove("is-visible");
-  setTimeout(() => {
-    el.innerHTML = newHTML;
-    el.classList.add("is-visible");
-  }, 180);
 }
 
 /* -------------------------
    Typewriter
 -------------------------- */
 async function typewriter(text, el, speed = 58) {
+  if (!el) return;
   el.textContent = "";
   for (let i = 0; i < text.length; i++) {
     el.textContent += text[i];
@@ -139,46 +148,43 @@ async function typewriter(text, el, speed = 58) {
 }
 
 /* -------------------------
-   Apply language to UI
+   Language apply
 -------------------------- */
 function setLang(nextLang, retype = false) {
   lang = nextLang;
   localStorage.setItem(LS_LANG_KEY, lang);
 
-  langRuBtn.classList.toggle("is-active", lang === "ru");
-  langEnBtn.classList.toggle("is-active", lang === "en");
+  langRuBtn?.classList.toggle("is-active", lang === "ru");
+  langEnBtn?.classList.toggle("is-active", lang === "en");
 
-  // Buttons
-  yesBtn.textContent = TEXT[lang].yes;
-  noBtn.textContent = TEXT[lang].no;
-  $("#finalBtn").textContent = TEXT[lang].finalBtn;
+  if (yesBtn) yesBtn.textContent = TEXT[lang].yes;
+  if (noBtn) noBtn.textContent = TEXT[lang].no;
+  if (finalBtn) finalBtn.textContent = TEXT[lang].finalBtn;
 
-  // Hint only if already shown
-  if (noHint.style.opacity === "1") noHint.textContent = TEXT[lang].noHint;
+  if (noHint && noHint.style.opacity === "1") noHint.textContent = TEXT[lang].noHint;
 
-  // Story texts
-  if (!loadingLine.hidden) loadingLine.textContent = TEXT[lang].loading;
-  if (!line1.hidden) line1.innerHTML = TEXT[lang].line1;
-  if (!dateLine.hidden) dateLine.textContent = TEXT[lang].date;
-  if (!line2.hidden) line2.textContent = TEXT[lang].line2;
-  if (!caption.hidden) caption.textContent = TEXT[lang].caption;
-  if (!finalAsk.hidden) finalQ.textContent = TEXT[lang].finalQ;
-  if (screen3.classList.contains("is-active")) finalText.innerHTML = TEXT[lang].finalScreen;
+  if (loadingLine && !loadingLine.hidden) loadingLine.textContent = TEXT[lang].loading;
+  if (line1 && !line1.hidden) line1.innerHTML = TEXT[lang].line1;
+  if (dateLine && !dateLine.hidden) dateLine.textContent = TEXT[lang].date;
+  if (line2 && !line2.hidden) line2.textContent = TEXT[lang].line2;
+  if (caption) caption.textContent = TEXT[lang].caption;
+  if (finalQ) finalQ.textContent = TEXT[lang].finalQ;
 
-  // First screen question
-  if (retype) {
-    typewriter(TEXT[lang].q1, typeEl, 58);
-  } else if (screen1.classList.contains("is-active")) {
-    // if not typing now, just replace
-    typeEl.textContent = TEXT[lang].q1;
+  if (screen3?.classList.contains("is-active") && finalText) {
+    finalText.innerHTML = TEXT[lang].finalScreen;
   }
+
+  if (retype) typewriter(TEXT[lang].q1, typeEl, 58);
 }
 
 /* -------------------------
    Particles
 -------------------------- */
 function startParticles() {
+  if (!particlesCanvas) return null;
   const ctx = particlesCanvas.getContext("2d");
+  if (!ctx) return null;
+
   const state = {
     w: 0, h: 0,
     dpr: Math.min(window.devicePixelRatio || 1, 2),
@@ -248,6 +254,8 @@ function startParticles() {
    Heart draw
 -------------------------- */
 async function drawHeart() {
+  if (!heartPath || !heartSvg) return;
+
   const length = heartPath.getTotalLength();
   heartPath.style.strokeDasharray = String(length);
   heartPath.style.strokeDashoffset = String(length);
@@ -268,49 +276,55 @@ async function drawHeart() {
 async function runSequence() {
   await drawHeart();
 
-  loadingLine.textContent = TEXT[lang].loading;
+  if (loadingLine) loadingLine.textContent = TEXT[lang].loading;
   reveal(loadingLine);
   await sleep(600);
 
-  progressWrap.hidden = false;
-  requestAnimationFrame(() => progressWrap.classList.add("is-visible"));
+  if (progressWrap) {
+    progressWrap.hidden = false;
+    requestAnimationFrame(() => progressWrap.classList.add("is-visible"));
+  }
 
   for (let p = 0; p <= 100; p++) {
-    progressFill.style.width = `${p}%`;
-    progressPct.textContent = `${p}%`;
+    if (progressFill) progressFill.style.width = `${p}%`;
+    if (progressPct) progressPct.textContent = `${p}%`;
     await sleep(18 + (p < 20 ? 10 : 0));
   }
 
   await sleep(550);
 
-  line1.innerHTML = TEXT[lang].line1;
+  if (line1) line1.innerHTML = TEXT[lang].line1;
   reveal(line1);
   await sleep(1200);
 
-  dateLine.textContent = TEXT[lang].date;
+  if (dateLine) dateLine.textContent = TEXT[lang].date;
   reveal(dateLine);
   await sleep(950);
 
-  line2.textContent = TEXT[lang].line2;
+  if (line2) line2.textContent = TEXT[lang].line2;
   reveal(line2);
   await sleep(1100);
 
-  caption.textContent = TEXT[lang].caption;
-  photoBlock.hidden = false;
-  requestAnimationFrame(() => photoBlock.classList.add("is-visible"));
+  if (caption) caption.textContent = TEXT[lang].caption;
+  if (photoBlock) {
+    photoBlock.hidden = false;
+    requestAnimationFrame(() => photoBlock.classList.add("is-visible"));
+  }
   await sleep(1200);
 
-  finalQ.textContent = TEXT[lang].finalQ;
-  finalBtn.textContent = TEXT[lang].finalBtn;
-  finalAsk.hidden = false;
-  requestAnimationFrame(() => finalAsk.classList.add("is-visible"));
+  if (finalQ) finalQ.textContent = TEXT[lang].finalQ;
+  if (finalBtn) finalBtn.textContent = TEXT[lang].finalBtn;
+  if (finalAsk) {
+    finalAsk.hidden = false;
+    requestAnimationFrame(() => finalAsk.classList.add("is-visible"));
+  }
 }
 
 /* -------------------------
    Final hearts
 -------------------------- */
 function startFloatingHearts() {
-  if (heartsInterval) return;
+  if (!heartsLayer || heartsInterval) return;
 
   heartsInterval = setInterval(() => {
     const heart = document.createElement("div");
@@ -334,22 +348,26 @@ function startFloatingHearts() {
    Music
 -------------------------- */
 function updateSoundIcon() {
-  soundBtn.textContent = isMuted ? "🔇" : "🔊";
+  if (soundBtn) soundBtn.textContent = isMuted ? "🔇" : "🔊";
 }
 
 async function tryPlayMusic() {
+  if (!bgm) return;
   try {
     bgm.volume = 0.55;
     await bgm.play();
     isMuted = false;
     updateSoundIcon();
-  } catch {
+  } catch (e) {
+    // If music.mp3 is missing or blocked, we just stay muted.
+    console.warn("[VAL] Music not playing:", e?.message || e);
     isMuted = true;
     updateSoundIcon();
   }
 }
 
-soundBtn.addEventListener("click", async () => {
+soundBtn?.addEventListener("click", async () => {
+  if (!bgm) return;
   if (isMuted) await tryPlayMusic();
   else {
     bgm.pause();
@@ -362,75 +380,77 @@ soundBtn.addEventListener("click", async () => {
    Final effect
 -------------------------- */
 async function finalEffect() {
-  glitch.classList.add("on");
+  glitch?.classList.add("on");
   await sleep(140);
 
-  flash.classList.add("on");
+  flash?.classList.add("on");
   await sleep(220);
-  flash.classList.remove("on");
+  flash?.classList.remove("on");
 
   await sleep(120);
-  glitch.classList.remove("on");
+  glitch?.classList.remove("on");
 }
 
 /* -------------------------
    Events
 -------------------------- */
-noBtn.addEventListener("click", () => {
-  noHint.textContent = TEXT[lang].noHint;
-  noHint.style.opacity = "1";
+noBtn?.addEventListener("click", () => {
+  if (noHint) {
+    noHint.textContent = TEXT[lang].noHint;
+    noHint.style.opacity = "1";
+  }
 
-  screen1.classList.add("shake");
-  screen1.classList.add("dim");
+  screen1?.classList.add("shake");
+  screen1?.classList.add("dim");
   setTimeout(() => {
-    screen1.classList.remove("shake");
-    screen1.classList.remove("dim");
+    screen1?.classList.remove("shake");
+    screen1?.classList.remove("dim");
   }, 450);
 });
 
-yesBtn.addEventListener("click", async () => {
+yesBtn?.addEventListener("click", async () => {
   yesBtn.disabled = true;
-  noBtn.disabled = true;
+  if (noBtn) noBtn.disabled = true;
 
-  soundBtn.hidden = false;
-  updateSoundIcon();
-  await tryPlayMusic();
-
+  // ✅ FIX: переход сразу, музыка потом
   showScreen(screen2);
+
+  // Particles immediately
   startParticles();
+
+  // Show sound button and attempt music (non-blocking to transition)
+  if (soundBtn) soundBtn.hidden = false;
+  updateSoundIcon();
+  tryPlayMusic(); // not awaited
 
   await sleep(700);
   runSequence();
 });
 
-finalBtn.addEventListener("click", async () => {
+finalBtn?.addEventListener("click", async () => {
   await finalEffect();
 
-  finalText.innerHTML = TEXT[lang].finalScreen;
+  if (finalText) finalText.innerHTML = TEXT[lang].finalScreen;
   showScreen(screen3);
   startFloatingHearts();
 });
 
 /* Language buttons */
-langRuBtn.addEventListener("click", () => setLang("ru", true));
-langEnBtn.addEventListener("click", () => setLang("en", true));
+langRuBtn?.addEventListener("click", () => setLang("ru", true));
+langEnBtn?.addEventListener("click", () => setLang("en", true));
 
 /* -------------------------
    Init
 -------------------------- */
 (async function init() {
-  // Load saved language
   const saved = localStorage.getItem(LS_LANG_KEY);
   if (saved === "ru" || saved === "en") lang = saved;
 
-  // Apply initial button labels
-  yesBtn.textContent = TEXT[lang].yes;
-  noBtn.textContent = TEXT[lang].no;
+  setLang(lang, false);
 
   showScreen(screen1);
   await sleep(350);
   await typewriter(TEXT[lang].q1, typeEl, 58);
 
-  // Keep console line consistent with language choice
   console.log(TEXT[lang].console);
 })();
