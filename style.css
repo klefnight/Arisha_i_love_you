@@ -1,187 +1,431 @@
+/* style.css */
+
+/* -------------------------
+   Base / Theme
+-------------------------- */
 :root{
-  --bg: #000000;
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.62);
-
-  --neon: rgba(255, 0, 60, .85);
-
+  --bg:#000000;
+  --text:#ffffff;
+  --accent:#ff0033;
+  --glow: rgba(255, 0, 51, 0.55);
+  --soft: rgba(255,255,255,0.12);
+  --soft2: rgba(255,255,255,0.08);
   --radius: 18px;
-  --shadow: 0 0 22px rgba(255,0,60,.20), 0 0 50px rgba(255,0,60,.15);
 }
 
-*{ box-sizing: border-box; }
-html,body{ height: 100%; }
-
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
 body{
-  margin: 0;
+  margin:0;
   background: var(--bg);
   color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  overflow: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  overflow-x:hidden;
 }
 
-/* Фоновые слои */
+/* Subtle global glow on text */
+p, button{
+  text-shadow: 0 0 10px rgba(255,255,255,0.12);
+}
+
+/* -------------------------
+   Layout
+-------------------------- */
 #particles{
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: 0;
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+  opacity:0;
   transition: opacity 900ms ease;
 }
-#particles.is-on{ opacity: 1; }
 
-#hearts{
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 900ms ease;
-}
-#hearts.is-on{ opacity: 1; }
-
-.stage{
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: grid;
-  place-items: center;
+.app{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
   padding: 24px 16px;
+  position:relative;
 }
 
-.center{
-  width: min(720px, 100%);
-  text-align: center;
-  display: grid;
-  place-items: center;
-  gap: 14px;
-}
-
-.stack{
-  gap: 18px;
-}
-
-/* Screens */
 .screen{
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
+  width:min(980px, 100%);
+  min-height: 78vh;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  opacity:0;
+  transform: translateY(10px);
   transition: opacity 900ms ease, transform 900ms ease;
 }
 
 .screen.is-active{
-  opacity: 1;
+  display:flex;
+}
+.screen.is-visible{
+  opacity:1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
-/* Typography */
-.headline{
-  font-size: clamp(1.35rem, 5vw, 2.25rem);
-  margin: 0;
+.center{
+  width:100%;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 18px;
+}
+
+.center.wide{
+  gap: 22px;
+}
+
+/* -------------------------
+   Typewriter
+-------------------------- */
+.type{
+  font-size: clamp(26px, 6vw, 44px);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  min-height: 1.6em; /* prevents layout shift while typing */
 }
 
 .hint{
-  margin: 0;
-  min-height: 1.25em;
-  color: var(--muted);
-  opacity: 0;
-  transition: opacity 400ms ease;
+  margin:0;
+  min-height: 1.2em;
+  opacity:0.0;
+  transition: opacity 500ms ease;
+  color: rgba(255,255,255,0.75);
 }
-.hint.show{ opacity: 1; }
 
-/* Buttons */
-.btn-row{
-  display: flex;
+/* -------------------------
+   Buttons
+-------------------------- */
+.btnRow{
+  display:flex;
   gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 8px;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
 .btn{
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.03);
   color: var(--text);
   padding: 12px 18px;
   border-radius: 999px;
-  cursor: pointer;
-  transition: transform 200ms ease, box-shadow 250ms ease;
+  cursor:pointer;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  transition: transform 160ms ease, box-shadow 240ms ease, border-color 240ms ease, background 240ms ease;
+  box-shadow: 0 0 0 rgba(255,255,255,0);
 }
 
 .btn:hover{
-  box-shadow: 0 0 18px rgba(255,0,60,.35);
+  border-color: rgba(255,255,255,0.34);
+  box-shadow: 0 0 22px rgba(255,255,255,0.12);
   transform: translateY(-1px);
+}
+
+.btn:active{
+  transform: translateY(0px) scale(0.99);
+}
+
+.btn-primary{
+  border-color: rgba(255,0,51,0.45);
+  box-shadow: 0 0 18px rgba(255,0,51,0.15);
+}
+.btn-primary:hover{
+  box-shadow: 0 0 26px rgba(255,0,51,0.22);
+  border-color: rgba(255,0,51,0.7);
 }
 
 .btn-wide{
   padding: 13px 22px;
-  min-width: 220px;
+  min-width: 230px;
 }
 
-/* ---------------- HEART ---------------- */
-
-.heart-wrap{
-  position: relative;
-  width: 200px;
-  height: 200px;
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  transform: scale(.92);
-  transition: opacity 900ms ease, transform 900ms ease;
+/* soft shake on "No" */
+.shake{
+  animation: shake 420ms ease;
 }
-.heart-wrap.show{
-  opacity: 1;
-  transform: scale(1);
+@keyframes shake{
+  0%{ transform: translateX(0); }
+  20%{ transform: translateX(-6px); }
+  40%{ transform: translateX(6px); }
+  60%{ transform: translateX(-4px); }
+  80%{ transform: translateX(4px); }
+  100%{ transform: translateX(0); }
+}
+
+/* dim overlay vibe */
+.dim{
+  filter: brightness(0.88);
+}
+
+/* -------------------------
+   Heart
+-------------------------- */
+.heartWrap{
+  width: min(520px, 92vw);
+  aspect-ratio: 1 / 1;
+  display:grid;
+  place-items:center;
+  margin-top: 6px;
 }
 
 .heart{
-  width: 130px;
-  height: 130px;
-  position: relative;
-  transform: rotate(-45deg);
-
-  background: radial-gradient(circle at 30% 30%, #ff8a8a, #ff003c);
-
-  box-shadow:
-    0 0 25px rgba(255, 0, 60, .7),
-    0 0 60px rgba(255, 0, 60, .5),
-    0 0 120px rgba(255, 0, 60, .35);
-
-  border-radius: 22px;
-  animation: pulse 2.2s ease-in-out infinite;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.heart::before,
-.heart::after{
+#heartPath{
+  /* stroke animation controlled by JS via dasharray/offset */
+  filter: drop-shadow(0 0 14px rgba(255,0,51,0.20));
+  opacity: 0.95;
+}
+
+.heartComplete #heartPath{
+  /* stronger neon after fully drawn */
+  filter:
+    drop-shadow(0 0 10px rgba(255,0,51,0.65))
+    drop-shadow(0 0 30px rgba(255,0,51,0.35));
+}
+
+/* heartbeat pulse */
+.pulse{
+  animation: pulse 1200ms ease-in-out infinite;
+}
+@keyframes pulse{
+  0%, 100% { transform: scale(1); }
+  22% { transform: scale(1.012); }
+  45% { transform: scale(1); }
+  62% { transform: scale(1.02); }
+  78% { transform: scale(1); }
+}
+
+/* -------------------------
+   Story / Lines
+-------------------------- */
+.story{
+  width:min(760px, 100%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 16px;
+}
+
+.fadeLine{
+  margin:0;
+  font-size: clamp(16px, 3.6vw, 20px);
+  line-height:1.55;
+  color: rgba(255,255,255,0.88);
+  opacity:0;
+  transform: translateY(8px);
+  transition: opacity 900ms ease, transform 900ms ease;
+}
+
+.fadeLine.is-visible{
+  opacity:1;
+  transform: translateY(0);
+}
+
+.dateLine{
+  margin:0;
+  font-size: clamp(18px, 4.4vw, 24px);
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: rgba(255,255,255,0.92);
+  opacity:0;
+  transform: translateY(8px);
+  transition: opacity 900ms ease, transform 900ms ease;
+  text-shadow:
+    0 0 14px rgba(255,0,51,0.18),
+    0 0 26px rgba(255,0,51,0.12);
+}
+
+.dateLine.is-visible{
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* -------------------------
+   Progress
+-------------------------- */
+.progressWrap{
+  width: min(420px, 92vw);
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  opacity:0;
+  transform: translateY(6px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.progressWrap.is-visible{
+  opacity:1;
+  transform: translateY(0);
+}
+
+.progressBar{
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.progressFill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background: linear-gradient(90deg, rgba(255,0,51,0.9), rgba(255,255,255,0.18));
+  box-shadow: 0 0 18px rgba(255,0,51,0.18);
+  transition: width 120ms linear;
+}
+
+.progressText{
+  width: 48px;
+  text-align:right;
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+}
+
+/* -------------------------
+   Photo
+-------------------------- */
+.photoBlock{
+  margin-top: 6px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 12px;
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity 900ms ease, transform 900ms ease;
+}
+
+.photoBlock.is-visible{
+  opacity:1;
+  transform: translateY(0);
+}
+
+.photoFrame{
+  width: min(520px, 92vw);
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid rgba(255,0,51,0.42);
+  background: rgba(255,255,255,0.04);
+  box-shadow:
+    0 0 26px rgba(255,0,51,0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow:hidden;
+  position:relative;
+}
+
+.photoFrame::after{
   content:"";
   position:absolute;
-  width: 130px;
-  height: 130px;
-  background: inherit;
-  border-radius: 50%;
+  inset:-40%;
+  background: radial-gradient(circle at 30% 20%, rgba(255,0,51,0.12), transparent 50%);
+  pointer-events:none;
 }
 
-.heart::before{ top: -65px; left: 0; }
-.heart::after{ left: 65px; top: 0; }
-
-.heart-glow{
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  filter: blur(30px);
-  opacity: .6;
-  background: radial-gradient(circle, rgba(255,0,60,.45), rgba(255,0,60,.2), transparent 70%);
+.photoFrame img{
+  width:100%;
+  display:block;
+  border-radius: calc(var(--radius) - 8px);
+  transform: scale(1.02);
+  animation: slowZoom 14s ease-in-out infinite alternate;
+  filter: saturate(1.02) contrast(1.02);
 }
 
-@keyframes pulse{
-  0%,100%{ transform: rotate(-45deg) scale(1); }
-  50%{ transform: rotate(-45deg) scale(1.1); }
+@keyframes slowZoom{
+  from { transform: scale(1.02); }
+  to   { transform: scale(1.06); }
+}
+
+.caption{
+  margin:0;
+  color: rgba(255,255,255,0.78);
+  font-size: 14.5px;
+}
+
+/* -------------------------
+   Final ask
+-------------------------- */
+.finalAsk{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 14px;
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity 900ms ease, transform 900ms ease;
+}
+.finalAsk.is-visible{
+  opacity:1;
+  transform: translateY(0);
+}
+
+/* -------------------------
+   Final screen hearts
+-------------------------- */
+.finalText{
+  margin:0;
+  font-size: clamp(18px, 4.8vw, 28px);
+  line-height: 1.55;
+  color: rgba(255,255,255,0.90);
+}
+
+.accent{
+  color: rgba(255,0,51,0.98);
+  text-shadow:
+    0 0 10px rgba(255,0,51,0.32),
+    0 0 24px rgba(255,0,51,0.18);
+}
+
+.heartsLayer{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.heartFloat{
+  position:absolute;
+  bottom:-40px;
+  font-size: 18px;
+  opacity: 0.0;
+  animation: floatUp 6.5s linear forwards;
+  text-shadow:
+    0 0 10px rgba(255,0,51,0.30),
+    0 0 22px rgba(255,0,51,0.18);
+}
+
+@keyframes floatUp{
+  0%   { transform: translateY(0) scale(0.9); opacity:0; }
+  10%  { opacity:0.55; }
+  60%  { opacity:0.35; }
+  100% { transform: translateY(-115vh) scale(1.15); opacity:0; }
+}
+
+/* -------------------------
+   Responsive tweaks
+-------------------------- */
+@media (min-width: 720px){
+  .btn{ font-size: 16px; padding: 12px 20px; }
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+  #particles{ display:none; }
 }
