@@ -1,39 +1,38 @@
-<!-- index.html -->
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Valentine</title>
+  <title>Валентинка</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Subtle background particles (only enabled after "Yes") -->
+
   <canvas id="particles" aria-hidden="true"></canvas>
 
   <main class="app" role="main">
-    <!-- 1) FIRST SCREEN -->
-    <section id="screen-1" class="screen is-active" aria-label="First screen">
+
+    <!-- ПЕРВЫЙ ЭКРАН -->
+    <section id="screen-1" class="screen is-active">
       <div class="center">
-        <p class="type" id="typewriter" aria-live="polite"></p>
+        <p class="type" id="typewriter"></p>
 
-        <p class="hint" id="noHint" role="status" aria-live="polite"></p>
+        <p class="hint" id="noHint"></p>
 
-        <div class="btnRow" role="group" aria-label="Choices">
-          <button id="yesBtn" class="btn btn-primary">Yes</button>
-          <button id="noBtn" class="btn">No</button>
+        <div class="btnRow">
+          <button id="yesBtn" class="btn btn-primary">Да</button>
+          <button id="noBtn" class="btn">Нет</button>
         </div>
       </div>
     </section>
 
-    <!-- 2) HEART + STORY -->
-    <section id="screen-2" class="screen" aria-label="Heart screen">
+    <!-- СЕРДЦЕ И ИСТОРИЯ -->
+    <section id="screen-2" class="screen">
       <div class="center wide">
-        <div class="heartWrap" aria-hidden="true">
-          <!-- Heart is drawn via stroke animation -->
-          <svg id="heartSvg" viewBox="0 0 600 520" class="heart" focusable="false">
+
+        <div class="heartWrap">
+          <svg id="heartSvg" viewBox="0 0 600 520" class="heart">
             <defs>
-              <!-- Neon glow filter -->
               <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="4" result="blur1" />
                 <feGaussianBlur stdDeviation="10" result="blur2" />
@@ -45,7 +44,6 @@
               </filter>
             </defs>
 
-            <!-- A clean heart path (single stroke) -->
             <path
               id="heartPath"
               d="M300 470
@@ -66,55 +64,69 @@
         </div>
 
         <div class="story">
-          <p id="loadingLine" class="fadeLine" hidden>Loading something important…</p>
+          <p id="loadingLine" class="fadeLine" hidden>
+            Загрузка чего-то важного…
+          </p>
 
-          <div id="progressWrap" class="progressWrap" hidden aria-label="Loading progress">
-            <div class="progressBar" aria-hidden="true">
+          <div id="progressWrap" class="progressWrap" hidden>
+            <div class="progressBar">
               <div id="progressFill" class="progressFill"></div>
             </div>
-            <div class="progressText"><span id="progressPct">0%</span></div>
+            <div class="progressText">
+              <span id="progressPct">0%</span>
+            </div>
           </div>
 
           <p id="line1" class="fadeLine" hidden>
-            You were never a coincidence.<br />
-            You became my favorite decision.
+            Ты никогда не была случайностью.<br />
+            Ты стала моим любимым решением.
           </p>
 
-          <p id="dateLine" class="dateLine" hidden>Since May 12, 2025</p>
+          <p id="dateLine" class="dateLine" hidden>
+            С 12 мая 2025 года
+          </p>
 
-          <p id="line2" class="fadeLine" hidden>Every day with you feels intentional.</p>
+          <p id="line2" class="fadeLine" hidden>
+            Каждый день с тобой — осознанный выбор.
+          </p>
 
-          <!-- Photo -->
+          <!-- Фото -->
           <div id="photoBlock" class="photoBlock" hidden>
             <div class="photoFrame">
-              <!-- Replace photo.jpg with your image (keep file in same folder). -->
-              <img src="photo.jpg" alt="A memory" loading="lazy" />
+              <img src="photo.jpg" alt="Наш момент" />
             </div>
-            <p class="caption">Built with moments. Powered by feelings.</p>
+            <p class="caption">
+              Создано из моментов. Движимо чувствами.
+            </p>
           </div>
 
-          <!-- Final question -->
+          <!-- Финальный вопрос -->
           <div id="finalAsk" class="finalAsk" hidden>
-            <p class="fadeLine is-visible">Will you be my Valentine?</p>
-            <button id="finalBtn" class="btn btn-primary btn-wide">Run forever.exe</button>
+            <p class="fadeLine is-visible">
+              Станешь моей Валентинкой?
+            </p>
+            <button id="finalBtn" class="btn btn-primary btn-wide">
+              Запустить навсегда.exe
+            </button>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- 3) FINAL SCREEN -->
-    <section id="screen-3" class="screen" aria-label="Final screen">
+    <!-- ФИНАЛЬНЫЙ ЭКРАН -->
+    <section id="screen-3" class="screen">
       <div class="center">
         <p class="finalText">
-          System locked.<br />
-          Partner selected: <span class="accent">Arisha</span><br />
-          Status: <span class="accent">Irreplaceable.</span>
+          Система заблокирована.<br />
+          Партнёр выбран: <span class="accent">Ариша</span><br />
+          Статус: <span class="accent">Незаменима.</span>
         </p>
       </div>
 
-      <!-- Floating hearts layer (enabled on final screen) -->
-      <div id="heartsLayer" class="heartsLayer" aria-hidden="true"></div>
+      <div id="heartsLayer" class="heartsLayer"></div>
     </section>
+
   </main>
 
   <script src="script.js"></script>
