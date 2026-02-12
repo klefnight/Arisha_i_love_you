@@ -3,35 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Валентинка</title>
+  <title>Valentine</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <canvas id="particles" aria-hidden="true"></canvas>
 
+  <!-- Music (starts only after user clicks "Yes") -->
+  <audio id="bgm" preload="auto" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Language toggle -->
+  <div class="topControls" aria-label="Controls">
+    <div class="langToggle" role="group" aria-label="Language">
+      <button id="langRu" class="chip is-active" type="button">RU</button>
+      <button id="langEn" class="chip" type="button">EN</button>
+    </div>
+
+    <button id="soundBtn" class="soundBtn" aria-label="Sound" hidden>🔇</button>
+  </div>
+
+  <!-- cinematic overlays -->
+  <div id="vignette" class="vignette" aria-hidden="true"></div>
+  <div id="flash" class="flash" aria-hidden="true"></div>
+  <div id="glitch" class="glitch" aria-hidden="true"></div>
+
   <main class="app" role="main">
-
-    <!-- ПЕРВЫЙ ЭКРАН -->
-    <section id="screen-1" class="screen is-active">
+    <!-- 1) FIRST SCREEN -->
+    <section id="screen-1" class="screen is-active" aria-label="First screen">
       <div class="center">
-        <p class="type" id="typewriter"></p>
+        <p class="type" id="typewriter" aria-live="polite"></p>
+        <p class="hint" id="noHint" role="status" aria-live="polite"></p>
 
-        <p class="hint" id="noHint"></p>
-
-        <div class="btnRow">
-          <button id="yesBtn" class="btn btn-primary">Да</button>
-          <button id="noBtn" class="btn">Нет</button>
+        <div class="btnRow" role="group" aria-label="Choices">
+          <button id="yesBtn" class="btn btn-primary" type="button"></button>
+          <button id="noBtn" class="btn" type="button"></button>
         </div>
       </div>
     </section>
 
-    <!-- СЕРДЦЕ И ИСТОРИЯ -->
-    <section id="screen-2" class="screen">
+    <!-- 2) HEART + STORY -->
+    <section id="screen-2" class="screen" aria-label="Heart screen">
       <div class="center wide">
-
-        <div class="heartWrap">
-          <svg id="heartSvg" viewBox="0 0 600 520" class="heart">
+        <div class="heartWrap" aria-hidden="true">
+          <svg id="heartSvg" viewBox="0 0 600 520" class="heart" focusable="false">
             <defs>
               <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="4" result="blur1" />
@@ -64,69 +81,42 @@
         </div>
 
         <div class="story">
-          <p id="loadingLine" class="fadeLine" hidden>
-            Загрузка чего-то важного…
-          </p>
+          <p id="loadingLine" class="fadeLine" hidden></p>
 
-          <div id="progressWrap" class="progressWrap" hidden>
-            <div class="progressBar">
+          <div id="progressWrap" class="progressWrap" hidden aria-label="Loading progress">
+            <div class="progressBar" aria-hidden="true">
               <div id="progressFill" class="progressFill"></div>
             </div>
-            <div class="progressText">
-              <span id="progressPct">0%</span>
-            </div>
+            <div class="progressText"><span id="progressPct">0%</span></div>
           </div>
 
-          <p id="line1" class="fadeLine" hidden>
-            Ты никогда не была случайностью.<br />
-            Ты стала моим любимым решением.
-          </p>
+          <p id="line1" class="fadeLine" hidden></p>
+          <p id="dateLine" class="dateLine" hidden></p>
+          <p id="line2" class="fadeLine" hidden></p>
 
-          <p id="dateLine" class="dateLine" hidden>
-            С 12 мая 2025 года
-          </p>
-
-          <p id="line2" class="fadeLine" hidden>
-            Каждый день с тобой — осознанный выбор.
-          </p>
-
-          <!-- Фото -->
           <div id="photoBlock" class="photoBlock" hidden>
             <div class="photoFrame">
-              <img src="photo.jpg" alt="Наш момент" />
+              <img src="photo.jpg" alt="Memory" loading="lazy" />
             </div>
-            <p class="caption">
-              Создано из моментов. Движимо чувствами.
-            </p>
+            <p id="caption" class="caption"></p>
           </div>
 
-          <!-- Финальный вопрос -->
           <div id="finalAsk" class="finalAsk" hidden>
-            <p class="fadeLine is-visible">
-              Станешь моей Валентинкой?
-            </p>
-            <button id="finalBtn" class="btn btn-primary btn-wide">
-              Запустить навсегда.exe
-            </button>
+            <p id="finalQ" class="fadeLine is-visible"></p>
+            <button id="finalBtn" class="btn btn-primary btn-wide" type="button"></button>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- ФИНАЛЬНЫЙ ЭКРАН -->
-    <section id="screen-3" class="screen">
+    <!-- 3) FINAL SCREEN -->
+    <section id="screen-3" class="screen" aria-label="Final screen">
       <div class="center">
-        <p class="finalText">
-          Система заблокирована.<br />
-          Партнёр выбран: <span class="accent">Ариша</span><br />
-          Статус: <span class="accent">Незаменима.</span>
-        </p>
+        <p id="finalText" class="finalText"></p>
       </div>
 
-      <div id="heartsLayer" class="heartsLayer"></div>
+      <div id="heartsLayer" class="heartsLayer" aria-hidden="true"></div>
     </section>
-
   </main>
 
   <script src="script.js"></script>
